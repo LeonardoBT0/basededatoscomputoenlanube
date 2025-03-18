@@ -113,30 +113,50 @@ db.libros.find(
 3. Mostrar los documentos cuya cantidad sea menor a 5
 
 ```json
-db.libros.find({precio:{$lt: 5}})
+db.libros.find(
+  {
+    precio:{$lt: 5}
+  }
+)
 ```
 
 4. Mostrar los documentos que pertenezcan a la editorial biblio o planeta
 
 ```json
-db.libros.find({editorial:{$in: ['Biblio', 'Planeta']}})
+db.libros.find(
+  {
+    editorial:{$in: ['Biblio', 'Planeta']}
+  }
+)
 ```
 
 5. Mostrar todos los documentos de libross que cuestes 20 o 25
 
 ```json
-db.libros.find({precio:{$in:[20, 25]}})
+db.libros.find(
+  {
+    precio:{$in:[20, 25]}
+  }
+)
 ```
 
 6. Mostrar todos los documentos de libros que no cuesten 20 o 25
 
 ```json
-db.libros.find({precio:{$nin:[20, 25]}})
+db.libros.find(
+  {
+    precio:{$nin:[20, 25]}
+  }
+)
 ```
 7. Mostrar el primer documento de libros que cueste 20 o 25
 
 ```json
-db.libros.findOne({precio:{$in:[20, 25]}})
+db.libros.findOne(
+  {
+    precio:{$in:[20, 25]}
+  }
+)
 ```
 
 ## Operadores logicos 
@@ -697,5 +717,143 @@ db.libros.find(
 # Otros metodos skip, limit, size
 
 ```JSON
-db.libros.file
+db.libros.find(
+  {},
+  {titulo:1,precio:1,_id:0,editorial:1}.size()
+)
+```
+```JSON
+db.libros.find(
+  {},
+  {titulo:{$regex:/java/i}}).size()
+```
+
+- Buscar todos los libros pero mostrando los dos primeros
+
+```JSON
+db.libros.find(
+  {},
+  {titulo:1,precio:1,_id:0,editorial:1}).limit(2)
+```
+
+- Mostrar los tres ultimos libros
+
+```JSON
+db.libros.find(
+  {},
+  {titulo:1,precio:1,_id:0,editorial:1}).sort({precio:-1}).limit(3)
+```
+
+- Seleccionar todos los libros ordenados por titulo de forma desscendete saltando los dos primeros del resultado y muestre el tamaño
+
+```JSON
+db.libros.find(
+  {},
+  {})
+  .sort({titulo:-1}).skip(2).size(2)
+```
+
+# Borrar colecciones o bases de datos
+
+```JSON
+use db5
+
+db.createCollection('Ejemplo')
+
+show collections
+
+db.Ejemplo.insertOne(
+  {
+    nombre: 'Chapuin',
+  }
+)
+
+db.Ejemplo.drop()
+
+db.dropDatabase()
+```
+mongosh "mongodb+srv://cluster0.vz1ai.mongodb.net/" --apiVersion 1 --username administrador
+
+
+
+# Practica 3. Updates y deletes
+
+1. Cambiar el salario el empleado Imogene Nolan. Se le asigna 8000
+```JSON
+ db.empleados.updateOne({nombre:"Imogene"},{$set:{salario:8000}})
+ ```
+2. Cambiar "Belgium" por "Belgica" en los empleados (debe haber dos)
+```JSON
+db.empleados.updateMany({pais:"Belgium"},{$set:{pais:"Belgica"}}) 
+ ```
+3. Aumentar el salario de los empleados de google en 1000
+```JSON
+db.empleados.updateMany({empresa:"Google"},{$inc:{salario:1000}})
+```
+4. Reemplazar el empleado Omar Gentry por el siguiente documento
+```json
+{
+nombre: "Omar",
+apellidos: "Gentry",
+correo: "sin correo",
+direccion: "Sin calle",
+region: "Sin region",
+pais: "Sin pais",
+empresa: "Sin empresa",
+ventas: 0,
+salario: 0,
+departamentos: "Este empleado ha sido anulado"
+}
+```
+
+```json
+db.empleados.replaceOne(
+  {_id:ObjectId('67c0a83be81cf776f6154576')},
+  {
+nombre: 'Omar',
+apellidos: 'Gentry',
+correo: 'sin correo',
+direccion: 'Sin calle',
+region: 'Sin region',
+pais: 'Sin pais',
+empresa: 'Sin empresa',
+ventas: 0,
+salario: 0,
+departamentos: 'Este empleado ha sido anulado'
+}
+)
+```
+5. Con find comprobar que el empleado a sido Modificando
+```Json
+ db.empleados.find({nombre:"Omar"})
+ ```
+6. Borrar los empleados que ganen mas de 8500, Nota deben ser borrados 3 documentos
+```Json
+db.empleados.deleteMany({salario:{$gt:8500}})
+ ```
+7. Visualizar con una expresion regular todos los empleados con apellidos que comiencen con "R"
+```Json
+ db.empleados.find({apellidos:{$regex:/^R/}})
+ ```
+8. Buscar todas las regiones que contengan un "V" Hacerlo con el operador $regex y que no distinga mayusculas y minusculas. Deben alir 2
+```Json
+ db.empleados.find({regiones:{$regex:/V/i}})
+ ```
+9. Visualizar los apellidos de los empleados ordenados por el propio apellido
+```Json
+db.empleados.find({region:{$regex:/V/i}})
+```
+10. Indicar el numero de empleados que trabajan en google
+```Json
+db.empleados.find({empresa:'Google'}).size()
+```
+11. Borrar la coleccion empleados y la base de datos
+```JSON
+db.empleados.drop()
+
+show collections
+
+db.dropDatabase()
+
+show dbs
 ```
