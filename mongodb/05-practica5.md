@@ -1,6 +1,6 @@
 # Agregaciones
 
-1. Para hacer esta práctica vamos a cargar unos datos ficticios de empresas.
+1. Para hacer esta práctica vamos a cargar unos datos ficticios de empresa.
 2. Tienes un fichero denominado “productos.json”
 3. Debes poner el resultado de las consultas en cada apartado
 
